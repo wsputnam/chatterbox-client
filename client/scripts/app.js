@@ -10,14 +10,14 @@ var app = {
   
   
   renderMessage: function() {
-    // takes in a specified and prepends all of our messages into the DOM (in our chat box)
+    // takes in a written message and prepends all of our messages into the DOM (in our chat box)
     console.log('render message: ' + JSON.stringify(this));
     $('.chats').prepend(`<div class="addedMessage"> ${this.username} ${this.text} </div>`);
   },
   
   fetch: function() {
     // gets data from the server and calls render message with that data
-    console.log('fetch: ' + JSON.stringify(this));
+    // console.log('fetch: ' + JSON.stringify(this));
     $.get(this.server, this.renderMessage());
   },
   
@@ -30,14 +30,15 @@ var app = {
       app.send(message);
     });
   },
-  send: function(message) {
+  
+  send: function(str) {
     // this should send in a user inputted message to the server
     
     // this action will only happen when the submit button is called and it has a valid message
     // select inputted message using jquery (put that in a data key)
     
     // post call with ajax sends msg info to server
-    
+    // var message = {username: 'willPutnam', text: 'hello', roomname: '4chan'};
     $.ajax({
     // This is the url you should use to communicate with the parse API server.
       url: this.server,
@@ -59,7 +60,7 @@ var app = {
   //deletes all prepended messages from the DOM (pre refresh)
     $('#deleteMessages').on('click', function() {
       console.log('messages deleted');
-      $('.chats').remove();
+      $('.chats').empty();
     });
   },
 
@@ -84,7 +85,6 @@ var app = {
     app.fetch();
     app.submit();
     app.send();
-    // app.send();
     // app.renderMessage();
     app.clearMessages();
     // app.renderRoom();
