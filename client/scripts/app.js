@@ -18,16 +18,15 @@ var app = {
 
   
   
-  renderMessage: function() {
+  renderMessage: function(data) {
     // takes in a written message and prepends all of our messages into the DOM (in our chat box)
-    console.log('render message: ' + JSON.stringify(this));
-    $('.chats').prepend(`<div class="addedMessage"> ${JSON.stringify(app.messages)} </div>`);
-    // $('.chats').prepend(`<div class="addedMessage"> ${this.username} ${this.text} </div>`);
+    var get = data;
+    console.log('render message: ' + JSON.stringify(get));
+    // $('.chats').prepend(`<div class="addedMessage"> <span>  </span> <span> </span> <span> ${data.roomname} </span>  </div>`);
+    $('.chats').prepend(`<div class="addedMessage"> ${get} </div>`);
   },
 
-  fetch: function() {
-    // console.log('this', this);
-    
+  fetch: function() {    
     //wrap get in function that does not execute instantly
     //returns get
     
@@ -37,7 +36,15 @@ var app = {
     // console.log('fetch: ' + JSON.stringify(this));
     $('#refreshMessages').on('click', function() {
       console.log('this', this);
-      $.get(app.server, app.renderMessage()); 
+      $.get(app.server, function(data) {
+        app.renderMessage(data);
+      });
+      //console.dir(get.responseJSON);
+      //console.log('stringified get', JSON.stringify(get));
+      
+      // store exact data
+      // console.log(app.messages);
+      // app.renderMessage();
     });
   },
   
