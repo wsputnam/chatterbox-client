@@ -7,26 +7,55 @@
 
     <!-- dependencies -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/backbone/backbone.js"></script>
     <script>
-      // YOU DO NOT NEED TO EDIT THIS CODE
-      if (!/(&|\?)username=/.test(window.location.search)) {
-        var newSearch = window.location.search;
-        if (newSearch !== '' & newSearch !== '?') {
-          newSearch += '&';
-        }
-        newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
-        window.location.search = newSearch;
-      }
+// YOU DO NOT NEED TO EDIT THIS CODE
+if (!/(&|\?)username=/.test(window.location.search)) {
+  var newSearch = window.location.search;
+  if (newSearch !== '' & newSearch !== '?') {
+    newSearch += '&';
+  }
+  newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
+  window.location.search = newSearch;
+}
     </script>
-    <!-- your scripts -->
+    
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
   </head>
+  
+  
   <body>
-    <div id="main">
+    <div id="main" class="container">
       <h1>chatterbox</h1>
-      <!-- Your HTML goes here! -->
     </div>
-    <div id="chats"></div>
+    
+    <div id="joinRoom" class="container">
+      <p>Enter Room:</p>
+      <select name="rooms" size="1">
+        <option value="JoinRoom">Join Room</option>
+        <option value="SanFrancisco">San Francisco</option>
+        <option value="Boston">Boston</option>
+        <option value="NewYork">New York</option>
+        <option value="LosAngeles">Los Angeles</option>
+      </select>
+    </div>
+    
+    <div class="container">
+      <button id="refreshMessages">Refresh messages</button>
+      <button id="deleteMessages">Delete Messages</button>
+    </div>
+      
+    <div class="container">
+      <h1>Messages</h1>
+      <form>
+        <input id="messageValue" type="text" name="messageBox" placeholder="Write a message">
+        <input id="submit" type="submit" value="Submit">
+      </form> 
+      <div class="chats"></div>
+    </div>
+    
   </body>
+  
 </html>

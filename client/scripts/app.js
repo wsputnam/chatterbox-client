@@ -1,1 +1,103 @@
 // YOUR CODE HERE:
+
+// figure out how to protect site from XSS attacks
+
+// function that gets messages
+// function that posts messages
+var app = {
+  // server is the url where we are sharing and retrieving messages from each other
+  server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
+  
+  
+  renderMessage: function() {
+    // takes in a specified and prepends all of our messages into the DOM (in our chat box)
+    console.log('render message: ' + JSON.stringify(this));
+    $('.chats').prepend(`<div class="addedMessage"> ${this.username} ${this.text} </div>`);
+  },
+  
+  fetch: function() {
+    // gets data from the server and calls render message with that data
+    console.log('fetch: ' + JSON.stringify(this));
+    $.get(this.server, this.renderMessage());
+  },
+  
+  submit: function() {
+    var message;
+    $('#inputMessageSubmit').on('click', function (event) {
+      message = $('#inputMessageValue').val();
+      console.log(message);
+      event.preventDefault();
+      app.send(message);
+    });
+  },
+  send: function(message) {
+    // this should send in a user inputted message to the server
+    
+    // this action will only happen when the submit button is called and it has a valid message
+    // select inputted message using jquery (put that in a data key)
+    
+    // post call with ajax sends msg info to server
+    
+    $.ajax({
+    // This is the url you should use to communicate with the parse API server.
+      url: this.server,
+      type: 'POST',
+      data: message,
+      contentType: 'application/json',
+      success: function (data) {
+        console.log('chatterbox: Message sent');
+      },
+      error: function (data) {
+        // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+        console.error('chatterbox: Failed to send message', data);
+      }
+    });
+  },
+
+
+  clearMessages: function() {
+  //deletes all prepended messages from the DOM (pre refresh)
+    $('#deleteMessages').on('click', function() {
+      console.log('messages deleted');
+      $('.chats').remove();
+    });
+  },
+
+  // renderRoom: function(roomname) {
+  //   // filtering all messages (ajax requests) by roomname
+  //   // var coolTweets = messages.filter(function(msg) {
+  //   //   return msg.roomname = roomname;
+  //   // });
+  //   // return coolTweets.forEach(function(user) {
+  //   //   $('.messageContainer').prepend('<div>' + user.username + user.text + '</div>');
+  //   // });
+  
+  // },
+
+  // befriend: function() {
+  //   $('username').on('click', function() {});
+  //   // add friend clicked on to user's list of friends
+  
+  // },
+  
+  init: function() {
+    app.fetch();
+    app.submit();
+    app.send();
+    // app.send();
+    // app.renderMessage();
+    app.clearMessages();
+    // app.renderRoom();
+    // app.befriend();
+    console.log('page has initialized');
+  // invokes all methods upon loading
+  }
+
+};
+
+$(document).ready(function() { 
+  console.log('doc is ready');
+  
+  app.init();
+});
+
