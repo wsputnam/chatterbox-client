@@ -1,12 +1,21 @@
-// YOUR CODE HERE:
+
 
 // figure out how to protect site from XSS attacks
 
-// function that gets messages
-// function that posts messages
 var app = {
   // server is the url where we are sharing and retrieving messages from each other
   server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
+  
+  // option 1
+  messages: {},
+  usernames: [],
+
+  // need to filter messages by roomname
+  roomnames: [],
+
+  // option 2
+  // messages: {results: []}, (same as server-side results)
+
   
   
   renderMessage: function() {
@@ -31,7 +40,7 @@ var app = {
     });
   },
   
-  send: function(str) {
+  send: function(message) {
     // this should send in a user inputted message to the server
     
     // this action will only happen when the submit button is called and it has a valid message
@@ -41,9 +50,10 @@ var app = {
     // var message = {username: 'willPutnam', text: 'hello', roomname: '4chan'};
     $.ajax({
     // This is the url you should use to communicate with the parse API server.
-      url: this.server,
+      url: app.server,
       type: 'POST',
-      data: message,
+      // need to get our messages in the correct format (stringified objects)
+      data: JSON.stringify(message),
       contentType: 'application/json',
       success: function (data) {
         console.log('chatterbox: Message sent');
