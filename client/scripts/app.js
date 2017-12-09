@@ -7,7 +7,7 @@ var app = {
   server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
   
   // option 1
-  messages: {},
+  messages: [],
   usernames: [],
 
   // need to filter messages by roomname
@@ -21,20 +21,42 @@ var app = {
   renderMessage: function() {
     // takes in a written message and prepends all of our messages into the DOM (in our chat box)
     console.log('render message: ' + JSON.stringify(this));
-    $('.chats').prepend(`<div class="addedMessage"> ${this.username} ${this.text} </div>`);
+    $('.chats').prepend(`<div class="addedMessage"> ${JSON.stringify(app.messages)} </div>`);
+    // $('.chats').prepend(`<div class="addedMessage"> ${this.username} ${this.text} </div>`);
   },
-  
+
   fetch: function() {
+    // console.log('this', this);
+    
+    //wrap get in function that does not execute instantly
+    //returns get
+    
+    
+    console.log('this.renderMessage', this.renderMessage());
     // gets data from the server and calls render message with that data
     // console.log('fetch: ' + JSON.stringify(this));
-    $.get(this.server, this.renderMessage());
+    $('#refreshMessages').on('click', function() {
+      console.log('this', this);
+      $.get(app.server, app.renderMessage()); 
+    });
   },
   
   submit: function() {
-    var message;
+    var message = {};
     $('#inputMessageSubmit').on('click', function (event) {
-      message = $('#inputMessageValue').val();
-      console.log(message);
+      
+      message.text = $('#inputMessageValue').val();
+      message.username = window.location.search.split('username=')[1];
+      
+      console.log('this', this);
+      console.log('message ', message);
+      
+      message.roomname = 'lobby';
+      console.log('room', message.roomname);
+      
+      console.log('message text ', message.text);
+      console.log('username ', message.username);
+      
       event.preventDefault();
       app.send(message);
     });
