@@ -32,14 +32,14 @@ if (!/(&|\?)username=/.test(window.location.search)) {
     </div>
     
     <div id="joinRoom" class="container">
+    
       <p>Enter Room:</p>
-      <select name="rooms" size="1">
-        <option value="JoinRoom">Join Room</option>
-        <option value="SanFrancisco">San Francisco</option>
-        <option value="Boston">Boston</option>
-        <option value="NewYork">New York</option>
-        <option value="LosAngeles">Los Angeles</option>
+      
+      <select class = "rooms" name="rooms" size="1">
+        <option class='option' value="all">All</option>
       </select>
+      <button class="updateRooms">Update Rooms</button>
+      
     </div>
     
     <div class="container">

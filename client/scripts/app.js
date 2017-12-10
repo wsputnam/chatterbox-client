@@ -1,20 +1,31 @@
 
 
-// figure out how to protect site from XSS attacks
 
 var app = {
   // server is the url where we are sharing and retrieving messages from each other
   server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
   
-  // option 1
-  messages: [],
   friends: [],
 
   // need to filter messages by roomname
   roomnames: [],
+  
 
-  // option 2
-  // messages: {results: []}, (same as server-side results)
+  addRoomsToInput: function(rooms) {
+    $(document).on('click', '.updateRooms', function() {
+      //$(this).addClass('friend');
+      //$(this).addClass('bold');
+      for (var i = 0; i < rooms.length; i++) {
+        var room = rooms[i];
+        var dropDownElement = document.createElement('option');
+        console.log('dropDownElement', dropDownElement);
+        dropDownElement.textContent = room;
+        dropDownElement.value = room;
+        $('.rooms').prepend(dropDownElement);
+      }
+    });
+  },
+
   addFriend: function() {
     $(document).on('click', '.addedMessage', function() {
       //$(this).addClass('friend');
@@ -38,7 +49,7 @@ var app = {
     } else {
       $('.chats').prepend(`<div class="addedMessage ${roomname}"> <span class ="user ${user}">${user}</span> <span>${text} Posted on: ${createdAt} </span> </div>`);
     }
-    if (!app.roomnames.includes(roomname)) {
+    if (app.roomnames.includes(roomname) === false && roomname !== undefined && roomname !== null && roomname.length > 2 && roomname !== '') {
       app.roomnames.push(roomname);
     }
   },
@@ -60,7 +71,7 @@ var app = {
         data: 'order=-createdAt', //REQUEST FROM NEWEST
         success: function(data) {
           for (var i = data.results.length - 1; i > 0; i--) {
-            roomname = data.results[i].roomname;
+            // roomname = data.results[i].roomname;
             app.renderMessage(_.escape(data.results[i].username), _.escape(data.results[i].text), _.escape(data.results[i].createdAt), _.escape(data.results[i].roomname));
           }
         },
@@ -99,7 +110,6 @@ var app = {
     // this action will only happen when the submit button is called and it has a valid message
  
     $.ajax({
-    // This is the url you should use to communicate with the parse API server.
       url: app.server,
       type: 'POST',
       // need to get our messages in the correct format (stringified objects)
@@ -109,7 +119,6 @@ var app = {
         console.log('chatterbox: Message sent');
       },
       error: function (data) {
-        // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
         console.error('chatterbox: Failed to send message', data);
       }
     });
@@ -124,27 +133,37 @@ var app = {
     });
   },
 
-  // renderRoom: function(roomname) {
-  //   // filtering all messages (ajax requests) by roomname
-  //   // var coolTweets = messages.filter(function(msg) {
-  //   //   return msg.roomname = roomname;
-  //   // });
-  //   // return coolTweets.forEach(function(user) {
-  //   //   $('.messageContainer').prepend('<div>' + user.username + user.text + '</div>');
-  //   // });
+
+
+  renderRoom: function() {
+    // filtering all messages (ajax requests) by roomname
+    
+    // still working
+    $('.rooms').change(function() {
+      var selectedRoom = $('.rooms').find(':selected').text();
+      $('.addedMessage').not(':contains(selectedRoom)').detach();
+    });
+
+  },
   
-  // },
+  
+  
+  invokeAddRoomsToInput: function(rooms) {
+    app.addRoomsToInput(rooms);
+  },
+  
   
   init: function() {
     app.fetch();
     app.submit();
     app.send();
-    // app.renderMessage();
     app.clearMessages();
     app.addFriend();
-    // app.renderRoom();
-    // app.befriend();
-    console.log('page has initialized');
+    app.renderRoom();
+    app.addFriend();
+    app.invokeAddRoomsToInput(app.roomnames);
+    
+  
   // invokes all methods upon loading
   }
 
