@@ -94,4 +94,18 @@ form input[type=text] {
     margin-bottom: 5px;
 }
 
+.addedMessages {
+    border: 1px solid black;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
 
+.user {
+    border: 1px solid black;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.bold {
+    font-weight: bold;
+}

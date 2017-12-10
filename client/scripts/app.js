@@ -15,15 +15,18 @@ var app = {
 
   // option 2
   // messages: {results: []}, (same as server-side results)
+  addFriend: function() {
+    $('.addedMessage').on('click', function() {
+      alert('chats div clicked');
+      $(this).addClass('bold');
+    });
+  },
 
   
-  
-  renderMessage: function(data) {
+  renderMessage: function(user, text, createdAt) {
     // takes in a written message and prepends all of our messages into the DOM (in our chat box)
-    var get = data;
-    console.log('render message: ' + JSON.stringify(get));
-    // $('.chats').prepend(`<div class="addedMessage"> <span>  </span> <span> </span> <span> ${data.roomname} </span>  </div>`);
-    $('.chats').prepend(`<div class="addedMessage"> ${get} </div>`);
+   
+    $('.chats').prepend(`<div class="addedMessage"> <span class ="user ${user}">${user}</span> <span>${text} Posted on: ${createdAt} </span> </div>`);
   },
 
   fetch: function() {    
@@ -35,17 +38,24 @@ var app = {
     // gets data from the server and calls render message with that data
     // console.log('fetch: ' + JSON.stringify(this));
     $('#refreshMessages').on('click', function() {
-      console.log('this', this);
-      $.get(app.server, function(data) {
-        app.renderMessage(data);
+      $.ajax({
+        url: app.server,
+        type: 'GET',
+        dataType: 'JSON',
+        contentType: 'application/json',
+        data: 'order=-createdAt', //REQUEST FROM NEWEST
+        success: function(data) {
+          for (var i = data.results.length - 1; i > 0; i--) {
+            roomname = data.results[i].roomname;
+            app.renderMessage(_.escape(data.results[i].username), _.escape(data.results[i].text), _.escape(data.results[i].createdAt));
+          }
+        },
+        error: function(data) {
+          console.log('error: ' + data);
+        }
       });
-      //console.dir(get.responseJSON);
-      //console.log('stringified get', JSON.stringify(get));
-      
-      // store exact data
-      // console.log(app.messages);
-      // app.renderMessage();
     });
+
   },
   
   submit: function() {
@@ -73,10 +83,7 @@ var app = {
     // this should send in a user inputted message to the server
     
     // this action will only happen when the submit button is called and it has a valid message
-    // select inputted message using jquery (put that in a data key)
-    
-    // post call with ajax sends msg info to server
-    // var message = {username: 'willPutnam', text: 'hello', roomname: '4chan'};
+ 
     $.ajax({
     // This is the url you should use to communicate with the parse API server.
       url: app.server,
@@ -113,12 +120,6 @@ var app = {
   //   // });
   
   // },
-
-  // befriend: function() {
-  //   $('username').on('click', function() {});
-  //   // add friend clicked on to user's list of friends
-  
-  // },
   
   init: function() {
     app.fetch();
@@ -126,6 +127,7 @@ var app = {
     app.send();
     // app.renderMessage();
     app.clearMessages();
+    app.addFriend();
     // app.renderRoom();
     // app.befriend();
     console.log('page has initialized');
@@ -136,7 +138,6 @@ var app = {
 
 $(document).ready(function() { 
   console.log('doc is ready');
-  
   app.init();
 });
 
