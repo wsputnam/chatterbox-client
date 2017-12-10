@@ -8,7 +8,7 @@ var app = {
   
   // option 1
   messages: [],
-  usernames: [],
+  friends: [],
 
   // need to filter messages by roomname
   roomnames: [],
@@ -16,17 +16,31 @@ var app = {
   // option 2
   // messages: {results: []}, (same as server-side results)
   addFriend: function() {
-    $('.addedMessage').on('click', function() {
-      alert('chats div clicked');
+    $(document).on('click', '.addedMessage', function() {
+      //$(this).addClass('friend');
       $(this).addClass('bold');
+    });
+    $(document).on('click', '.user', function() {
+      //select username clicked as text
+      var username = $(this).text();
+      //push username to friends if not already present
+      if (!app.friends.includes(username)) {
+        app.friends.push(username);
+      }
     });
   },
 
   
-  renderMessage: function(user, text, createdAt) {
+  renderMessage: function(user, text, createdAt, roomname) {
     // takes in a written message and prepends all of our messages into the DOM (in our chat box)
-   
-    $('.chats').prepend(`<div class="addedMessage"> <span class ="user ${user}">${user}</span> <span>${text} Posted on: ${createdAt} </span> </div>`);
+    if (app.friends.includes(user)) {
+      $('.chats').prepend(`<div class="addedMessage ${roomname}"> <span class ="user ${user} friend">${user}</span> <span class="bold">${text} Posted on: ${createdAt} </span> </div>`);
+    } else {
+      $('.chats').prepend(`<div class="addedMessage ${roomname}"> <span class ="user ${user}">${user}</span> <span>${text} Posted on: ${createdAt} </span> </div>`);
+    }
+    if (!app.roomnames.includes(roomname)) {
+      app.roomnames.push(roomname);
+    }
   },
 
   fetch: function() {    
@@ -47,7 +61,7 @@ var app = {
         success: function(data) {
           for (var i = data.results.length - 1; i > 0; i--) {
             roomname = data.results[i].roomname;
-            app.renderMessage(_.escape(data.results[i].username), _.escape(data.results[i].text), _.escape(data.results[i].createdAt));
+            app.renderMessage(_.escape(data.results[i].username), _.escape(data.results[i].text), _.escape(data.results[i].createdAt), _.escape(data.results[i].roomname));
           }
         },
         error: function(data) {
